@@ -172,6 +172,7 @@ public:
 
 |||
 |--|--|
+|OS|Windows10 Enterprise 21H2 Build 19044.2728|
 |エディタ|Microsoft Visual Studio Code|
 |コンパイラ|GNU g++ 12.2.0|
 |コンパイラ標準準拠C++バージョン|C++17|
