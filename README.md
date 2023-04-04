@@ -1,0 +1,2 @@
+# development_standard
+開発標準についてまとめたリポジトリ
