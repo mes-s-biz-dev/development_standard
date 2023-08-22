@@ -102,12 +102,12 @@ ex. is_executable, has_next, ...
 (下記例はinclude/ship/component/propeller.hpp)
 
 ``` cpp
-#ifndef SHIP_COMPONENT_PROPELLER_HPP
-#define SHIP_COMPONENT_PROPELLER_HPP
+#ifndef _SHIP_COMPONENT_PROPELLER_HPP_
+#define _SHIP_COMPONENT_PROPELLER_HPP_
 
 ...
 
-#endif
+#endif // _SHIP_COMPONENT_PROPELLER_HPP_
 ```
 
 ## 名前空間
