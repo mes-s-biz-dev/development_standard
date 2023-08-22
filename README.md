@@ -35,74 +35,71 @@ ${PROJECT_ROOT} ---
                  |- .gitignore
                  |- CMakeLists.txt
                  |- include
-                 |   |--- Ship
-                 |   |     |--- Ship.hpp
-                 |   |     |--- Component
-                 |   |           |--- Hull.hpp
-                 |   |           |--- Rudder.hpp
-                 |   |           |--- Propeller.hpp
-                 |   |           |--- ...
-                 |   |
-                 |   |--- Repository
-                 |         |--- ...
+                 |   |--- ship
+                 |         |--- ship.hpp
+                 |         |--- component
+                 |               |--- hull.hpp
+                 |               |--- rudder.hpp
+                 |               |--- propeller.hpp
+                 |               |--- ...
                  |
                  |- src
-                 |   |--- Ship
-                 |   |     |--- Ship.hpp
-                 |   |     |--- Component
-                 |   |           |--- Hull.hpp
-                 |   |           |--- Rudder.hpp
-                 |   |           |--- Propeller.hpp
-                 |   |           |--- ...
-                 |   |
-                 |   |--- Repository
-                 |         |--- ...
+                 |   |--- ship
+                 |         |--- ship.hpp
+                 |         |--- component
+                 |               |--- hull.hpp
+                 |               |--- rudder.hpp
+                 |               |--- propeller.hpp
+                 |               |--- ...
                  |
                  |- test
-                 |   |--- Ship
-                 |   |     |--- TestShip.hpp
-                 |   |     |--- Component
-                 |   |           |--- TestHull.hpp
-                 |   |           |--- TestRudder.hpp
-                 |   |           |--- TestPropeller.hpp
-                 |   |           |--- ...
-                 |   |
-                 |   |--- Repository
-                 |         |--- ...
+                 |   |--- ship
+                 |         |--- test_ship.cpp
+                 |         |--- component
+                 |               |--- test_hull.cpp
+                 |               |--- test_rudder.cpp
+                 |               |--- test_propeller.cpp
+                 |               |--- ...
+                 |
                  |- build
                      |- ...
 ```
 
 ## ファイル名称
-- パスカルケース
+- スネークケース
 - ヘッダーファイル、実装部のファイルはそれぞれCPPのコードであることを明示するため(hpp,cpp)と記述する。
 - テストコードは明示的にテストであることを表す。
 
-ex. BowThruster.hpp, TestBowThruster.hpp, ...
+ex. bow_thruster.hpp, test_bow_thruster.hpp, ...
 
 ## 変数名
-- 基本的にはキャメルケース
+- 基本的にはすべて小文字のスネークケース
 - 論文中などから引用する変数名を使用する場合についてはこの限りではない。
 
-ex. gearRatio, 
+ex. gear_ratio
 
 ### bool変数
 - flag~,または~Flagは使用しない。
 - is~, has~など、trueの時にどうなっているかわかる名称にする。
 
-ex. isExecutable, hasNext, ...
+ex. is_executable, has_next, ...
 
 ## 関数
-- キャメルケース
-- 
+キャメルケース
 
 ### 引数voidを省略する。
 - C的記法と区別するため。
 
+## クラス名, 名前空間
+パスカルケース
+
+## マクロ, 静的変数
+全て大文字のスネークケース
+
 ## インクルードガード
 
 ファイルパスを踏襲する形で記載する。
-(下記例はinclude/Ship/Component/Propeller.hpp)
+(下記例はinclude/ship/component/propeller.hpp)
 
 ``` cpp
 #ifndef SHIP_COMPONENT_PROPELLER_HPP
@@ -127,12 +124,12 @@ class Propeller
 {
 private:
     double diameter_;
-    double gearRatio_;
-    double limitPlus_;
-    double limitMinus_;
+    double gear_ratio_;
+    double limit_plus_;
+    double limit_minus_;
     ...
-    bool isCalculatable();
-    Force* calculateForce();
+    bool is_calculatable();
+    Force* calculate_force();
 protected:
     ...
 public:
@@ -157,10 +154,10 @@ https://qiita.com/developer-kikikaikai/items/3984606dbdbf2bbbe74e
 class Propeller
 {
 private:
-    double diameter_;          /**< 直径 */
-    double gearRatio_;         /**< ギア比 */
-    double limitPlus_;         /**< +リミット */
-    double limitMinus_;        /**< -リミット */
+    double diameter_;           /**< 直径 */
+    double gear_ratio_;         /**< ギア比 */
+    double limit_plus_;         /**< +リミット */
+    double limit_minus_;        /**< -リミット */
     ...
 protected:
     ...
@@ -168,16 +165,3 @@ public:
     ...
 }
 ```
-
-## 開発環境
-
-|||
-|--|--|
-|OS|Windows10 Enterprise 21H2 Build 19044.2728|
-|エディタ|Microsoft Visual Studio Code|
-|コンパイラ|GNU g++ 12.2.0|
-|コンパイラ標準準拠C++バージョン|C++17|
-|コンパイル環境|MinGW|
-|ビルダー|Ninja|
-|ビルド自動化ソフト|CMake|
-|GUIフレームワーク|Qt 6.4.3|
