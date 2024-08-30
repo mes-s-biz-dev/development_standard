@@ -9,11 +9,13 @@
 |小文字スネークケース|small_snake_case|
 |キャメルケース|camelCase|
 |パスカルケース|PascalCase|
+
 ## 基本方針
+- ファイルエンコードはUTF-8を使用する。
+- 
 - 変数名,関数名,クラス名等は原則30文字以内とする。
 - 略称表記を極力使用しない。略称を用いる場合、下記サイトから省略した表現で検索できることを可能な限り確認する。
   https://www.acronymfinder.com/PARA.html
-- 予約語との衝突を避けるため、接頭辞としての_(アンダースコアは使用しない。)
 - C言語による実装と明示的に区別可能な個所は区別する。
 - その他ルールが規定されていないものについては基本的にGoogle社のC++ Style Guideに従うものとする。
 
@@ -30,7 +32,10 @@ https://qiita.com/ktsujino/items/d65637660208d59b11a0
 |include|各クラスの定義部(hppファイル)を配置|
 |src|各クラスの実装部(cppファイル)を配置|
 |test|テストコード(cppファイル)を配置|
-|build|バイナリデータ(exe,dll)などを配置<br>バージョン管理の対象外フォルダとする|
+|lib/bin|バイナリデータ(exe,dll)などを配置<br>(バージョン管理の対象外フォルダとする)|
+|build|ビルド時の一時ファイル出力先フォルダ<br>(バージョン管理の対象外フォルダとする)|
+
+ex. 
 
 ```
 ${PROJECT_ROOT} --- 
@@ -56,12 +61,14 @@ ${PROJECT_ROOT} ---
                  |
                  |- test
                  |   |--- ship
-                 |         |--- test_ship.cpp
+                 |         |--- test_calculate_total_force.cpp
                  |         |--- component
-                 |               |--- test_hull.cpp
-                 |               |--- test_rudder.cpp
-                 |               |--- test_propeller.cpp
-                 |               |--- ...
+                 |               |--- hull
+                 |               |     |--- test_calculate_force.cpp
+                 |               |--- rudder
+                 |               |     |--- test_calculate_force.cpp
+                 |               |--- propeller
+                 |                     |--- test_calculate_force.cpp
                  |
                  |- build
                      |- ...
@@ -75,72 +82,109 @@ ${PROJECT_ROOT} ---
 ex. bow_thruster.hpp, test_bow_thruster.hpp, ...
 
 ## 変数名
-- 基本的にはすべて小文字スネークケース
-- 論文中などから引用する変数名を使用する場合についてはこの限りではない。
+- 小文字スネークケース
 
-ex. gear_ratio
+ex. gear_ratio, ship_name
+
+ただし、以下のような特別な理由がある場合は例外を許容する。
+- パラメータファイル中のキー名と表記を統一したい
+- 引用した論文やその他ドキュメントと表記を統一したい
+- 変数をJSONやXML文字列へパースする際にできるだけ短い変数名にしたい
 
 ### bool変数
-- flag~,または~Flagは使用しない。
+- flag_~,または~_lagは使用しない。
 - is~, has~など、trueの時にどうなっているかわかる名称にする。
 
 ex. is_executable, has_next, ...
 
 ## 関数
-キャメルケース
+小文字スネークケース
 
-### 引数voidを省略する。
-- C的記法と区別するため。
+C的記法と区別するため引数voidを省略することを推奨する。
 
-## 構造体名, クラス名, 名前空間
-パスカルケース
+### 構造体
+- パスカルケース
+- 内部にさらに構造体定義がなされている場合は字下げする
+- 定義と変数宣言を同時に行わない
 
-## マクロ, 静的変数
-大文字スネークケース
+C++に構造体とクラスはデフォルトのアクセス指定子の違いのみである。
+(structはデフォルトがpublic, classはprivate)
+定義対象をstructを使用するかclassにするかは任意であるが
+POD型(以下の条件に合致するもの)についてはstructを使用することとする。
+- データ構造のみを保持する。
+- メンバのアクセシビリティが全て同じであるもの(特に全てpublicのもの)
+- メンバ関数を持たないもの
 
-## インクルードガード
-前後にアンダーバー(_)を付した大文字スネークケース
-ファイルパスを踏襲する形で記載する。
-(下記例はinclude/ship/component/propeller.hpp)
-
+ex. 
 ``` cpp
-#ifndef _SHIP_COMPONENT_PROPELLER_HPP_
-#define _SHIP_COMPONENT_PROPELLER_HPP_
+struct Geometory
+{
+    struct Angle
+    {
+        double degree;
+        ...
+    };
 
-...
-
-#endif // _SHIP_COMPONENT_PROPELLER_HPP_
+    Angle latitude;
+    Angle longitude;
+};
 ```
 
 ## クラス内メンバ
 - メンバーのみ字下げを行い、アクセス指定子は字下げしない。
-- アクセス指定子はprivate->protected->publicの順に、アクセス指定子の中ではメンバ変数->メンバ関数の順で記述する。
+- アクセス指定子はpublic->protected->privateの順に、アクセス指定子の中ではメンバ変数->メンバ関数の順で記述する。
 - プライベートメンバ変数は他のローカル変数と区別するため後置のアンダースコアを付与する。(前置ではC++の予約語と重複の恐れがある。)
 
 ``` cpp
 class Propeller
 {
+public:
+    bool is_calculatable();
+    Force* calculate_force();
+    ...
+protected:
+    ...
 private:
     double diameter_;
     double gear_ratio_;
     double limit_plus_;
     double limit_minus_;
     ...
-    bool is_calculatable();
-    Force* calculate_force();
-protected:
-    ...
-public:
-    ...
 }
 ```
 
-ヘッダーでインクルードするものは下記由来を基本とする。
-C由来のヘッダーはC++用に別途ラップしたものを使用する。
+## マクロ, 定数
+- 大文字スネークケース
 
-https://cppmap.github.io/standardization/header/
-    
-    
+コンパイル時の型チェックができないためマクロを定数値として使用してはならない。
+定数値を使用したい場合は以下のようにすること。
+
+``` cpp
+// NG
+#define CONST_VALUE 10
+
+// OK
+static constexpr int CONST_VALUE = 10;
+```
+
+ヘッダーで関数型マクロを定義する場合は **変数名を文字列する** 用途以外に使用してはならない。
+また、使用するスコープがあらかじめ定まっている場合は使用後にundefすることとする
+
+インクルードガードはinclude配下からの相対パスを踏襲する形で記載する。(下記例はinclude/ship/component/propeller.hpp)
+また、endifディレクティブで対象のマクロをコメントとして付与するようにする
+
+ex.
+``` cpp
+#ifndef SHIP_COMPONENT_PROPELLER_HPP
+#define SHIP_COMPONENT_PROPELLER_HPP
+
+...
+
+#endif // SHIP_COMPONENT_PROPELLER_HPP
+```
+
+現在、多くのコンパイラは#pragma onceをサポートしているが移植性も考慮し、使用を控える。
+
 ## コメントの付け方
 実装部(cppファイル内)ではなく宣言部(hppファイル内)でコメントは記述する。
 クラスメンバについてのコメントの記載方法はメンバー変数についてはDoxygen形式で記載する。
