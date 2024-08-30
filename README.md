@@ -12,7 +12,8 @@
 
 ## 基本方針
 - ファイルエンコードはUTF-8を使用する。
-- 
+- インデント(字下げ)はスペース4文字とし、タブ文字は使用しない。
+- プロジェクト構成の変更に対応できるようにするためヘッダーのインクルードはinclude/thirdparyフォルダからの相対パスで記載する。
 - 変数名,関数名,クラス名等は原則30文字以内とする。
 - 略称表記を極力使用しない。略称を用いる場合、下記サイトから省略した表現で検索できることを可能な限り確認する。
   https://www.acronymfinder.com/PARA.html
@@ -32,6 +33,7 @@ https://qiita.com/ktsujino/items/d65637660208d59b11a0
 |include|各クラスの定義部(hppファイル)を配置|
 |src|各クラスの実装部(cppファイル)を配置|
 |test|テストコード(cppファイル)を配置|
+|thirdpary|外部ライブラリを配置|
 |lib/bin|バイナリデータ(exe,dll)などを配置<br>(バージョン管理の対象外フォルダとする)|
 |build|ビルド時の一時ファイル出力先フォルダ<br>(バージョン管理の対象外フォルダとする)|
 
@@ -52,11 +54,11 @@ ${PROJECT_ROOT} ---
                  |
                  |- src
                  |   |--- ship
-                 |         |--- ship.hpp
+                 |         |--- ship.cpp
                  |         |--- component
-                 |               |--- hull.hpp
-                 |               |--- rudder.hpp
-                 |               |--- propeller.hpp
+                 |               |--- hull.cpp
+                 |               |--- rudder.cpp
+                 |               |--- propeller.cpp
                  |               |--- ...
                  |
                  |- test
